@@ -28,6 +28,8 @@ type replayPlayer = {
     hero: heroRarity,
     weapons: replayWeapon[],
     selectedWeaponIndex: number,
+    firstRollWeaponIndex: number | null,
+    firstRollEffect: replayEffect | null,
 }
 
 type replayState = {
@@ -38,6 +40,10 @@ type replayState = {
     targetPlayerIndex: number | null,
     targetCardIndex: number | null,
     round: number,
+    startingPlayer: number,
+    status: "START" | "MAIN" | "END",
+    endIndex: number | null,
+    chooseStartPlayer: number | null,
 }
 
 export type { replayState, replayPlayer, replayWeapon, replayEffect }

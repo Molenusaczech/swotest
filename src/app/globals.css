@@ -6,3 +6,30 @@
   font-family: 'ScratchChizz';
   src: url('/ScratchChizz.otf') format('opentype');
 }
+
+@font-face {
+  font-family: 'Roboto';
+  src: url('/Roboto.otf') format('truetype');
+}
+
+@import url(icons.css);
+
+:root {
+  --prussian-blue: #033053ff;
+  --indigo-dye: #044269ff;
+  --lapis-lazuli: #056096ff;
+  --steel-blue: #0780C8ff;
+  --celestial-blue: #0F98DFff;
+  --text: #000000;
+  --bg: #ffffff;
+}
+
+a {
+  text-decoration: none;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}

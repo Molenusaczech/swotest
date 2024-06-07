@@ -8,7 +8,7 @@ export default async function DebugPage() {
 
     const decks = GetDecksFromReplay(replay);
 
-    const state = getReplayState(replay, decks, 1);
+    const state = getReplayState(replay, decks, 20);
 
     return (
         <div>

@@ -1,13 +1,172 @@
 "use client";
 import ReplayState from "@/components/replay/replayState";
 import ReplayView from "@/components/replay/replayView";
+import ReplayWeapon from "@/components/replay/replayWeapon";
+import { replayState } from "@/types/replay/replayState";
+import { Button, TextField } from "@mui/material";
 import Image from "next/image";
+import { useEffect, useState } from "react";
+
+import { Socket, io } from "socket.io-client";
+
+const socket = io();
+
+function invertPlayerIndex(playerIndex: number) {
+  return playerIndex === 0 ? 1 : 0;
+}
 
 export default function Home() {
   "use client";
+
+  const [state, setState] = useState<null | replayState>(null);
+  const [playerIndex, setPlayerIndex] = useState<number>(0);
+
+  useEffect(() => {
+
+
+    console.log("run useeffect");
+    //socket.emit("test", { test: "test" });
+
+    socket.on("setState", (data: replayState) => {
+      console.log(data);
+      setState(data);
+    });
+
+    socket.emit("getState", {});
+  }, []);
+
   return (
     <div>
-      <ReplayState state={{"players":[{"hp":22,"max_hp":24,"energy":3,"actions":4,"hero":{"t":"hero","name":"Sir Božilev","cid":"Naftin","isFoil":false,"primaryHealth":24,"secondaryHealth":0,"energy":[{"value":3,"isUpgraded":false},{"value":4,"isUpgraded":false},{"value":3,"isUpgraded":false},{"value":2,"isUpgraded":false}],"bonuses":[{"value":4,"isUpgraded":false},null,{"value":3,"isUpgraded":false},{"value":3,"isUpgraded":false},{"value":2,"isUpgraded":false},{"value":3,"isUpgraded":false},{"value":2,"isUpgraded":false},{"value":1,"isUpgraded":false}]},"selectedWeaponIndex":0,"weapons":[{"card":{"t":"weapon","name":"HSJG","cid":"Wand_Diamond","durability":5,"effects":[{"isUpgraded":false,"value":2},{"isUpgraded":false,"value":3},{"isUpgraded":false,"value":4},{"isUpgraded":false,"value":5},{"isUpgraded":false,"value":2},{"isUpgraded":false,"value":5},{"isUpgraded":false,"value":6},{"isUpgraded":false,"value":4},{"isUpgraded":false,"value":4}]},"broken":"NOT_BROKEN","stashedEffect":null,"cost":2},{"card":{"t":"weapon","name":"ZFHF","cid":"Sword_SilverBlade","durability":1,"effects":[{"isUpgraded":false,"value":3},{"isUpgraded":false,"value":2},{"isUpgraded":false,"value":1,"durability":2},{"isUpgraded":false,"value":1,"durability":3},{"isUpgraded":false,"value":2,"durability":2},{"isUpgraded":false,"value":1,"durability":3},{"isUpgraded":false,"value":3,"durability":2},{"isUpgraded":false,"value":2,"durability":1},{"isUpgraded":false,"value":1}]},"broken":"NOT_BROKEN","stashedEffect":null,"cost":1},{"card":{"t":"weapon","name":"RDWP","cid":"Wand_Octo","durability":4,"effects":[{"isUpgraded":false,"value":4},{"isUpgraded":false,"value":3},{"isUpgraded":false,"value":4,"durability":1},{"isUpgraded":false,"value":3,"durability":1},{"isUpgraded":false,"value":2,"durability":2},{"isUpgraded":false,"value":2,"durability":2},{"isUpgraded":false,"value":3,"durability":1},{"isUpgraded":false,"value":5,"durability":1},{"isUpgraded":false,"value":3}]},"broken":"NOT_BROKEN","stashedEffect":null,"cost":2},{"card":{"t":"weapon","name":"FDVZ","cid":"Sword_Nimble","durability":2,"effects":[{"isUpgraded":false,"value":1},{"isUpgraded":false,"value":1},{"isUpgraded":false,"value":2,"durability":2},{"isUpgraded":false,"value":3,"durability":1},{"isUpgraded":false,"value":3},{"isUpgraded":false,"value":4,"durability":1},{"isUpgraded":false,"value":2,"durability":1},{"isUpgraded":false,"value":3,"durability":2},{"isUpgraded":false,"value":3}]},"broken":"NOT_BROKEN","stashedEffect":null,"cost":1},{"card":{"t":"weapon","name":"CVGY","cid":"Axe_DeepwoodClub","durability":2,"effects":[{"isUpgraded":false,"value":2},{"isUpgraded":false,"value":2},{"isUpgraded":false,"value":3},{"isUpgraded":false,"value":4},{"isUpgraded":false,"value":2},{"isUpgraded":false,"value":1},{"isUpgraded":false,"value":3},{"isUpgraded":false,"value":1},{"isUpgraded":false,"value":4}]},"broken":"NOT_BROKEN","stashedEffect":null,"cost":1}]},{"hp":20,"max_hp":20,"energy":3,"actions":4,"hero":{"t":"hero","name":"Drsnovál","cid":"Brocco","isFoil":false,"primaryHealth":20,"secondaryHealth":0,"energy":[{"value":3,"isUpgraded":false},{"value":4,"isUpgraded":false},{"value":3,"isUpgraded":false},{"value":2,"isUpgraded":false}],"bonuses":[{"value":1,"isUpgraded":false},{"value":1,"isUpgraded":false},{"value":2,"isUpgraded":false},{"value":5,"isUpgraded":false},{"value":3,"isUpgraded":false},null,{"value":4,"isUpgraded":false},null]},"selectedWeaponIndex":0,"weapons":[{"card":{"t":"weapon","name":"LVXB","cid":"Bow_ElderDragon","durability":4,"effects":[{"isUpgraded":false,"value":3},{"isUpgraded":false,"value":3},{"isUpgraded":false,"value":3,"durability":1},{"isUpgraded":false,"value":3,"durability":1},{"isUpgraded":false,"value":3,"durability":1},{"isUpgraded":false,"value":2,"durability":2},{"isUpgraded":false,"value":2,"durability":1},{"isUpgraded":false,"value":3,"durability":2},{"isUpgraded":false,"value":1}]},"broken":"NOT_BROKEN","stashedEffect":null,"cost":1},{"card":{"t":"weapon","name":"LDNR","cid":"Wand_Fire","durability":2,"effects":[{"isUpgraded":false,"value":2},{"isUpgraded":false,"value":3},{"isUpgraded":false,"value":2,"durability":1},{"isUpgraded":false,"value":4,"durability":3},{"isUpgraded":false,"value":2},{"isUpgraded":false,"value":3},{"isUpgraded":false,"value":3},{"isUpgraded":false,"value":2,"durability":2},{"isUpgraded":false,"value":2}]},"broken":"NOT_BROKEN","stashedEffect":null,"cost":1},{"card":{"t":"weapon","name":"SWFW","cid":"Bow_Long","durability":3,"effects":[{"isUpgraded":false,"value":2},{"isUpgraded":false,"value":2},{"isUpgraded":false,"value":2,"durability":1},{"isUpgraded":false,"value":2,"durability":1},{"isUpgraded":false,"value":1,"durability":2},{"isUpgraded":false,"value":2,"durability":2},{"isUpgraded":false,"value":2,"durability":2},{"isUpgraded":false,"value":2,"durability":2},{"isUpgraded":false,"value":1}]},"broken":"NOT_BROKEN","stashedEffect":null,"cost":1},{"card":{"t":"weapon","name":"KRZN","cid":"Wand_Pyro","durability":3,"effects":[{"isUpgraded":false,"value":3},{"isUpgraded":false,"value":1},{"isUpgraded":false,"value":4,"durability":1},{"isUpgraded":false,"value":5,"durability":2},{"isUpgraded":false,"value":3,"durability":4},{"isUpgraded":false,"value":3,"durability":4},{"isUpgraded":false,"value":3,"durability":1},{"isUpgraded":false,"value":4,"durability":1},{"isUpgraded":false,"value":4}]},"broken":"NOT_BROKEN","stashedEffect":null,"cost":2},{"card":{"t":"weapon","name":"CNDQ","cid":"Wand_Octo","durability":4,"effects":[{"isUpgraded":false,"value":4},{"isUpgraded":false,"value":3},{"isUpgraded":false,"value":4,"durability":2},{"isUpgraded":false,"value":3,"durability":2},{"isUpgraded":false,"value":3,"durability":2},{"isUpgraded":false,"value":3,"durability":2},{"isUpgraded":false,"value":2,"durability":1},{"isUpgraded":false,"value":5,"durability":1},{"isUpgraded":false,"value":2}]},"broken":"NOT_BROKEN","stashedEffect":null,"cost":2}]}],"playerTurn":0,"rolledEffect":null,"message":null,"targetPlayerIndex":null,"targetCardIndex":null,"round":0}}/>
+      Index hráče: <TextField
+        type="number"
+        value={playerIndex}
+        onChange={(e) => setPlayerIndex(parseInt(e.target.value))}
+      />
+      {state !== null && <div>
+        <ReplayState state={state} />
+
+
+        <div>
+          {[0, 1, 2, 3, 4].map((i) => (
+            <Button
+              key={i}
+              onClick={() => {
+                socket.emit("equipWeapon", { playerIndex, weaponIndex: i });
+              }}
+            >Equip {i}</Button>
+          )
+          )}
+
+          <Button
+            onClick={() => {
+              socket.emit("roll", { playerIndex });
+            }}
+          >Točit</Button>
+        </div>
+
+        <div>
+          <Button
+            onClick={() => {
+              socket.emit("endTurn", { playerIndex });
+            }}
+          >Konec tahu</Button>
+
+          <Button
+            onClick={() => {
+              socket.emit("discardEffect", { playerIndex });
+            }}
+          >Zahodit efekt</Button>
+
+          <Button
+            onClick={() => {
+              socket.emit("useEffect", { playerIndex, target: "player" });
+            }}
+          >Použít</Button>
+
+          <div>
+            {[0, 1, 2, 3, 4].map((i) => (
+              <Button
+                key={i}
+                onClick={() => {
+                  socket.emit("useEffect", { playerIndex, target: "weapon", targetWeaponIndex: i });
+                }}
+              >Použít na soupeřovu zbraň {i}</Button>
+            )
+            )}
+          </div>
+
+          <div>
+          {[0, 1, 2, 3, 4].map((i) => (
+              <Button
+                key={i}
+                onClick={() => {
+                  socket.emit("repairWeapon", { playerIndex, targetWeaponIndex: i });
+                }}
+              >Opravit zbraň {i}</Button>
+            )
+            )}
+            
+          </div>
+
+        </div>
+
+        {state.status == "START" && <div>
+          <div>
+            Výběr zbraní pro točení o začátek
+            {[0, 1, 2, 3, 4].map((i) => (
+              <Button
+                key={i}
+                onClick={() => {
+                  socket.emit("selectWeaponForFirstRoll", { playerIndex, weaponIndex: i });
+                }}
+              >Vybrat {i}</Button>
+            )
+            )}
+          </div>
+
+          <div>
+            P0: <ReplayWeapon
+              weapon={
+                {
+                  ...state.players[0].weapons[state.players[0].firstRollWeaponIndex as number],
+                  stashedEffect: state.players[0].firstRollEffect
+                }
+              }
+              isOnTurn={true}
+              isSelected={true}
+            />
+
+            P1: <ReplayWeapon
+              weapon={{ ...state.players[1].weapons[state.players[1].firstRollWeaponIndex as number], stashedEffect: state.players[1].firstRollEffect }}
+              isOnTurn={false}
+              isSelected={true}
+            />
+          </div>
+
+        </div>}
+
+        {state.chooseStartPlayer == playerIndex && state.status == "START" && <div>
+          <Button
+            onClick={() => {
+              socket.emit("startGame", { playerIndex, startingPlayerIndex: playerIndex });
+            }}
+          >Začnu já</Button>
+
+          <Button
+            onClick={() => {
+              socket.emit("startGame", { playerIndex, startingPlayerIndex: invertPlayerIndex(playerIndex) });
+            }}
+          >Začne soupeř</Button>
+        </div>}
+
+
+        <div>
+          Cur state: {JSON.stringify(state)}
+        </div>
+
+      </div>
+      }
+
     </div>
   );
 }
