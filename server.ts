@@ -11,6 +11,7 @@ import colorMap from "@/data/swo/colorMap";
 import { swoColor } from "@/types/replay/color";
 import { hasDurability } from "@/tools/hasDurability";
 import invertPlayerIndex from "@/tools/replay/invertPlayerIndex";
+import { getCurrentBonuses } from "@/tools/getCurrentBonuses";
 
 const dev = process.env.NODE_ENV !== "production";
 const hostname = "localhost";
@@ -36,7 +37,7 @@ let curGameState: replayState = {
         "name": "Sir Božilev",
         "cid": "Naftin",
         "isFoil": false,
-        "primaryHealth": 24,
+        "primaryHealth": 23,
         "secondaryHealth": 0,
         "energy":
           [
@@ -47,14 +48,14 @@ let curGameState: replayState = {
           ],
         "bonuses":
           [
-            { "value": 4, "isUpgraded": false },
+            { "value": 4, "isUpgraded": false, isUsed: false },
             null,
-            { "value": 3, "isUpgraded": false },
-            { "value": 3, "isUpgraded": false },
-            { "value": 2, "isUpgraded": false },
-            { "value": 3, "isUpgraded": false },
-            { "value": 2, "isUpgraded": false },
-            { "value": 1, "isUpgraded": false }]
+            { "value": 3, "isUpgraded": false, isUsed: false },
+            { "value": 3, "isUpgraded": false, isUsed: false },
+            { "value": 2, "isUpgraded": false, isUsed: false },
+            { "value": 3, "isUpgraded": false, isUsed: false },
+            { "value": 2, "isUpgraded": false, isUsed: false },
+            { "value": 1, "isUpgraded": false, isUsed: false }]
       },
       "selectedWeaponIndex": 0,
       "weapons":
@@ -89,13 +90,13 @@ let curGameState: replayState = {
           { "value": 2, "isUpgraded": false }
         ],
         "bonuses": [
-          { "value": 1, "isUpgraded": false },
-          { "value": 1, "isUpgraded": false },
-          { "value": 2, "isUpgraded": false },
-          { "value": 5, "isUpgraded": false },
-          { "value": 3, "isUpgraded": false },
+          { "value": 1, "isUpgraded": false, isUsed: false },
+          { "value": 1, "isUpgraded": false, isUsed: false },
+          { "value": 2, "isUpgraded": false, isUsed: false },
+          { "value": 5, "isUpgraded": false, isUsed: false },
+          { "value": 3, "isUpgraded": false, isUsed: false },
           null,
-          { "value": 4, "isUpgraded": false },
+          { "value": 4, "isUpgraded": false, isUsed: false },
           null
         ]
       },
@@ -105,6 +106,10 @@ let curGameState: replayState = {
 };
 
 function endPhaseStep() {
+
+  if (curGameState.endIndex === null) {
+    curGameState.endIndex = 0;
+  }
 
   if (curGameState.endIndex == 0) {
     let permaSum = 0;
@@ -144,7 +149,7 @@ function endPhaseStep() {
       }
     });
 
-    if (comboCount == 0) {
+    if (comboCount < 2) {
       curGameState.endIndex++;
       endPhaseStep();
     } else {
@@ -156,7 +161,7 @@ function endPhaseStep() {
       };
     }
 
-  } else if (curGameState.endIndex == 2) {
+  } else if (curGameState.endIndex >= 2) {
     endTurn();
   }
 }
@@ -196,6 +201,19 @@ function endTurn() {
     if (curGameState.players[1].energy > 12) {
       curGameState.players[1].energy = 12;
     }
+
+    curGameState.players[0].hero.bonuses.forEach((bonus) => {
+      if (bonus !== null) {
+        bonus.isUsed = false;
+      }
+    });
+
+    curGameState.players[1].hero.bonuses.forEach((bonus) => {
+      if (bonus !== null) {
+        bonus.isUsed = false;
+      }
+    });
+
   }
 }
 
@@ -208,6 +226,17 @@ function getRolledEffect(weapon: replayWeapon): replayEffect {
     durability: weapon.card.effects[rolledIndex]?.durability ?? null,
     color: Object.keys(colorMap).find(key => colorMap[key as swoColor] === type.f) as swoColor
   };
+}
+
+function removeCombos(playerIndex: number) {
+  curGameState.players[playerIndex].weapons.forEach((weapon) => {
+    if (weapon.stashedEffect !== null) {
+      if (weapon.stashedEffect.type === "COMBO") {
+        weapon.stashedEffect = null;
+      }
+    }
+  });
+
 }
 
 app.prepare().then(() => {
@@ -237,7 +266,19 @@ app.prepare().then(() => {
         return;
       }
 
+      if (curGameState.status == "END") {
+        console.log("Game in end state");
+        return;
+      }
+
       if (data.playerIndex == curGameState.playerTurn) {
+
+        const curWeapon = curGameState.players[data.playerIndex].weapons[data.weaponIndex];
+
+        if (curWeapon.stashedEffect !== null) {
+          curWeapon.stashedEffect = null;
+        }
+
         curGameState.players[data.playerIndex].selectedWeaponIndex = data.weaponIndex;
         io.emit("setState", curGameState);
       }
@@ -289,7 +330,12 @@ app.prepare().then(() => {
       }
     });
 
-    socket.on("useEffect", (data: { playerIndex: number, targetWeaponIndex: number, target: "player" | "weapon" }) => {
+    socket.on("useEffect", (data: {
+      playerIndex: number,
+      targetWeaponIndex: number,
+      target: "player" | "weapon",
+      bonusIndex: number
+    }) => {
 
       if (data.playerIndex !== curGameState.playerTurn) {
         console.log("Not your turn");
@@ -311,6 +357,52 @@ app.prepare().then(() => {
         return;
       }
 
+      if (data.bonusIndex !== 0 && data.bonusIndex) {
+        console.log("Bonus index not 0");
+        const bonuses = getCurrentBonuses(curGameState.players[curGameState.playerTurn].hero, curGameState.round, curGameState.rolledEffect.type);
+
+        if (bonuses === null) {
+          console.log("Invalid hero");
+          return;
+        }
+
+        /*if (bonuses.length < data.bonusIndex) {
+          console.log("Invalid bonus index");
+          return;
+        }*/
+
+        if (bonuses[data.bonusIndex - 1] === null) {
+          console.log(bonuses, data.bonusIndex);
+          console.log("Invalid bonus index");
+          return;
+        }
+
+        const heroBonus = bonuses[data.bonusIndex - 1];
+
+        if (heroBonus === null) {
+          return;
+        }
+
+        if (heroBonus.isUsed) {
+          console.log("Bonus already used");
+          return;
+        }
+
+        curGameState.rolledEffect.value += heroBonus.value;
+        //heroBonus.isUsed = true;
+
+        
+        const curBonus = curGameState.players[curGameState.playerTurn].hero.bonuses[(curGameState.round % 4) * 2 + data.bonusIndex - 1];
+
+        if (curBonus === null) {
+          console.log("Invalid curbonus index");
+          return;
+        }
+
+        curBonus.isUsed = true;
+        
+      }
+
       if (curGameState.status == "END") {
         if (curGameState.endIndex == 0) {
           curGameState.players[invertPlayerIndex(curGameState.playerTurn)].hp -= curGameState.rolledEffect.value;
@@ -328,6 +420,7 @@ app.prepare().then(() => {
           }
           curGameState.rolledEffect = null;
           curGameState.endIndex++;
+          removeCombos(curGameState.playerTurn);
           endPhaseStep();
           io.emit("setState", curGameState);
         }
@@ -354,7 +447,7 @@ app.prepare().then(() => {
         enemyPlayer.hp -= curGameState.rolledEffect.value;
         curGameState.rolledEffect = null;
       } else if (curGameState.rolledEffect.type === "WEAPON_ATTACK") {
-        
+
         if (enemyPlayer.weapons[data.targetWeaponIndex].broken !== "NOT_BROKEN") {
           console.log("Can't attack broken weapon");
           return;
@@ -370,7 +463,7 @@ app.prepare().then(() => {
           if (targetedWeapon.stashedEffect.durability === null) {
             console.log("Can't attack weapon with non-durability effect");
             return;
-          }  
+          }
           if (curGameState.rolledEffect.value >= targetedWeapon.stashedEffect.durability) {
             targetedWeapon.stashedEffect = null;
           }
@@ -397,7 +490,7 @@ app.prepare().then(() => {
             if (targetedWeapon.stashedEffect.durability === null) {
               console.log("Can't attack weapon with non-durability effect");
               return;
-            }  
+            }
             if (curGameState.rolledEffect.value >= targetedWeapon.stashedEffect.durability) {
               targetedWeapon.stashedEffect = null;
             }
@@ -422,7 +515,19 @@ app.prepare().then(() => {
     });
 
     socket.on("discardEffect", (data: { playerIndex: number }) => {
+
       if (data.playerIndex == curGameState.playerTurn) {
+
+
+        if (curGameState.status == "END") {
+          if (curGameState.endIndex == 2) {
+            curGameState.rolledEffect = null;
+            curGameState.endIndex++;
+            endPhaseStep();
+            io.emit("setState", curGameState);
+            return;
+          }
+        }
 
         if (curGameState.rolledEffect === null) {
           console.log("No effect rolled");
@@ -509,7 +614,7 @@ app.prepare().then(() => {
     });
 
     socket.on("repairWeapon", (data: { playerIndex: number, targetWeaponIndex: number }) => {
-    
+
       if (data.playerIndex !== curGameState.playerTurn) {
         console.log("Not your turn");
         return;

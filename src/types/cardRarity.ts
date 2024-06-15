@@ -1,8 +1,14 @@
 import { heroCid } from "@/data/heroTypeData";
 
+type energy = {
+    value: number,
+    isUpgraded: boolean
+}
+
 type bonus = {
     value: number,
     isUpgraded: boolean,
+    isUsed: boolean,
 }
 
 type heroRarity = {
@@ -12,7 +18,7 @@ type heroRarity = {
     isFoil: boolean,
     primaryHealth: number,
     secondaryHealth: number,
-    energy: bonus[],
+    energy: energy[],
     bonuses: (bonus | null)[],
 }
 

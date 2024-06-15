@@ -2,6 +2,10 @@
 import ReplayState from "@/components/replay/replayState";
 import ReplayView from "@/components/replay/replayView";
 import ReplayWeapon from "@/components/replay/replayWeapon";
+import effectMap from "@/data/swo/effectMap";
+import { getCurrentBonuses } from "@/tools/getCurrentBonuses";
+import { hasDurability } from "@/tools/hasDurability";
+import { effectType } from "@/types/replay/effectType";
 import { replayState } from "@/types/replay/replayState";
 import { Button, TextField } from "@mui/material";
 import Image from "next/image";
@@ -20,6 +24,21 @@ export default function Home() {
 
   const [state, setState] = useState<null | replayState>(null);
   const [playerIndex, setPlayerIndex] = useState<number>(0);
+  const [bonusIndex, setBonusIndex] = useState<number>(0);
+
+  let curBonuses = null;
+
+  if (state !== null && state.rolledEffect !== null) {
+    curBonuses = getCurrentBonuses(state.players[playerIndex].hero, state?.round, state.rolledEffect.type);
+  
+    if (curBonuses[bonusIndex + 1] === null && bonusIndex !== 0) {
+      setBonusIndex(0);
+    }
+
+    if (hasDurability(effectMap[state.rolledEffect.type]) && state.rolledEffect.color !== null && bonusIndex !== 0) {
+      setBonusIndex(0);
+    }
+  }
 
   useEffect(() => {
 
@@ -79,7 +98,7 @@ export default function Home() {
 
           <Button
             onClick={() => {
-              socket.emit("useEffect", { playerIndex, target: "player" });
+              socket.emit("useEffect", { playerIndex, target: "player", bonusIndex });
             }}
           >Použít</Button>
 
@@ -88,7 +107,7 @@ export default function Home() {
               <Button
                 key={i}
                 onClick={() => {
-                  socket.emit("useEffect", { playerIndex, target: "weapon", targetWeaponIndex: i });
+                  socket.emit("useEffect", { playerIndex, target: "weapon", targetWeaponIndex: i, bonusIndex });
                 }}
               >Použít na soupeřovu zbraň {i}</Button>
             )
@@ -96,7 +115,7 @@ export default function Home() {
           </div>
 
           <div>
-          {[0, 1, 2, 3, 4].map((i) => (
+            {[0, 1, 2, 3, 4].map((i) => (
               <Button
                 key={i}
                 onClick={() => {
@@ -105,7 +124,7 @@ export default function Home() {
               >Opravit zbraň {i}</Button>
             )
             )}
-            
+
           </div>
 
         </div>
@@ -159,6 +178,31 @@ export default function Home() {
           >Začne soupeř</Button>
         </div>}
 
+        {
+        state.rolledEffect !== null && 
+        state.playerTurn === playerIndex && 
+        state.rolledEffect.type !== null &&
+        ((state.status === "MAIN" && !hasDurability(effectMap[state.rolledEffect.type])) || (state.status === "END" && hasDurability(effectMap[state.rolledEffect.type]))) &&
+        <div>
+          <div>
+            <Button variant={0 === bonusIndex ? "contained" : "outlined"}
+              onClick={() => { setBonusIndex(0); }}
+
+            >
+              Bez bonusu
+            </Button>
+          </div>            {getCurrentBonuses(state.players[state.playerTurn].hero, state.round, state.rolledEffect?.type).map((bonus, i) => (
+            <div key={i + 1}>
+              {bonus !== null && <Button variant={(i + 1) === bonusIndex ? "contained" : "outlined"}
+                onClick={() => { setBonusIndex(i + 1); }}
+              >
+                {bonus.type}: {bonus.value}
+              </Button>}
+            </div>
+          ))
+
+          }
+        </div>}
 
         <div>
           Cur state: {JSON.stringify(state)}
