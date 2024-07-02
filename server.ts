@@ -22,61 +22,355 @@ const handler = app.getRequestHandler();
 
 let curGameState: replayState = {
   "startingPlayer": 0,
-  status: "START",
-  endIndex: null,
-  chooseStartPlayer: null,
+  "status": "START",
+  "endIndex": null,
+  "chooseStartPlayer": null,
   "players": [
     {
-      "hp": 24, "max_hp": 24, "energy": 3,
+      "hp": 24,
+      "max_hp": 24,
+      "energy": 3,
       "actions": 4,
-      firstRollWeaponIndex: null,
-      firstRollEffect: null,
-      "hero":
-      {
+      "firstRollWeaponIndex": null,
+      "firstRollEffect": null,
+      "hero": {
         "t": "hero",
         "name": "Sir Božilev",
         "cid": "Naftin",
         "isFoil": false,
         "primaryHealth": 23,
         "secondaryHealth": 0,
-        "energy":
-          [
-            { "value": 3, "isUpgraded": false },
-            { "value": 4, "isUpgraded": false },
-            { "value": 3, "isUpgraded": false },
-            { "value": 2, "isUpgraded": false }
-          ],
-        "bonuses":
-          [
-            { "value": 4, "isUpgraded": false, isUsed: false },
-            null,
-            { "value": 3, "isUpgraded": false, isUsed: false },
-            { "value": 3, "isUpgraded": false, isUsed: false },
-            { "value": 2, "isUpgraded": false, isUsed: false },
-            { "value": 3, "isUpgraded": false, isUsed: false },
-            { "value": 2, "isUpgraded": false, isUsed: false },
-            { "value": 1, "isUpgraded": false, isUsed: false }]
+        "energy": [
+          {
+            "value": 3,
+            "isUpgraded": false
+          },
+          {
+            "value": 4,
+            "isUpgraded": false
+          },
+          {
+            "value": 3,
+            "isUpgraded": false
+          },
+          {
+            "value": 2,
+            "isUpgraded": false
+          }
+        ],
+        "bonuses": [
+          {
+            "value": 4,
+            "isUpgraded": false,
+            "isUsed": false
+          },
+          null,
+          {
+            "value": 3,
+            "isUpgraded": false,
+            "isUsed": false
+          },
+          {
+            "value": 3,
+            "isUpgraded": false,
+            "isUsed": false
+          },
+          {
+            "value": 2,
+            "isUpgraded": false,
+            "isUsed": false
+          },
+          {
+            "value": 3,
+            "isUpgraded": false,
+            "isUsed": false
+          },
+          {
+            "value": 2,
+            "isUpgraded": false,
+            "isUsed": false
+          },
+          {
+            "value": 1,
+            "isUpgraded": false,
+            "isUsed": false
+          }
+        ]
       },
       "selectedWeaponIndex": 0,
-      "weapons":
-        [
-          {
-            "card":
-            {
-              "t": "weapon", "name": "HSJG", "cid": "Wand_Diamond", "durability": 5, "effects": [
-                { "isUpgraded": false, "value": 2 }, { "isUpgraded": false, "value": 3 }, { "isUpgraded": false, "value": 4 }, { "isUpgraded": false, "value": 5 }, { "isUpgraded": false, "value": 2 }, { "isUpgraded": false, "value": 5 }, { "isUpgraded": false, "value": 6 }, { "isUpgraded": false, "value": 4 }, { "isUpgraded": false, "value": 4 }]
-            }, "broken": "NOT_BROKEN", "stashedEffect": null, "cost": 2
-          }, { "card": { "t": "weapon", "name": "ZFHF", "cid": "Sword_SilverBlade", "durability": 1, "effects": [{ "isUpgraded": false, "value": 3 }, { "isUpgraded": false, "value": 2 }, { "isUpgraded": false, "value": 1, "durability": 2 }, { "isUpgraded": false, "value": 1, "durability": 3 }, { "isUpgraded": false, "value": 2, "durability": 2 }, { "isUpgraded": false, "value": 1, "durability": 3 }, { "isUpgraded": false, "value": 3, "durability": 2 }, { "isUpgraded": false, "value": 2, "durability": 1 }, { "isUpgraded": false, "value": 1 }] }, "broken": "NOT_BROKEN", "stashedEffect": null, "cost": 1 }, { "card": { "t": "weapon", "name": "RDWP", "cid": "Wand_Octo", "durability": 4, "effects": [{ "isUpgraded": false, "value": 4 }, { "isUpgraded": false, "value": 3 }, { "isUpgraded": false, "value": 4, "durability": 1 }, { "isUpgraded": false, "value": 3, "durability": 1 }, { "isUpgraded": false, "value": 2, "durability": 2 }, { "isUpgraded": false, "value": 2, "durability": 2 }, { "isUpgraded": false, "value": 3, "durability": 1 }, { "isUpgraded": false, "value": 5, "durability": 1 }, { "isUpgraded": false, "value": 3 }] }, "broken": "NOT_BROKEN", "stashedEffect": null, "cost": 2 }, { "card": { "t": "weapon", "name": "FDVZ", "cid": "Sword_Nimble", "durability": 2, "effects": [{ "isUpgraded": false, "value": 1 }, { "isUpgraded": false, "value": 1 }, { "isUpgraded": false, "value": 2, "durability": 2 }, { "isUpgraded": false, "value": 3, "durability": 1 }, { "isUpgraded": false, "value": 3 }, { "isUpgraded": false, "value": 4, "durability": 1 }, { "isUpgraded": false, "value": 2, "durability": 1 }, { "isUpgraded": false, "value": 3, "durability": 2 }, { "isUpgraded": false, "value": 3 }] }, "broken": "NOT_BROKEN", "stashedEffect": null, "cost": 1 }, { "card": { "t": "weapon", "name": "CVGY", "cid": "Axe_DeepwoodClub", "durability": 2, "effects": [{ "isUpgraded": false, "value": 2 }, { "isUpgraded": false, "value": 2 }, { "isUpgraded": false, "value": 3 }, { "isUpgraded": false, "value": 4 }, { "isUpgraded": false, "value": 2 }, { "isUpgraded": false, "value": 1 }, { "isUpgraded": false, "value": 3 }, { "isUpgraded": false, "value": 1 }, { "isUpgraded": false, "value": 4 }] }, "broken": "NOT_BROKEN", "stashedEffect": null, "cost": 1 }]
+      "weapons": [
+        {
+          "card": {
+            "t": "weapon",
+            "name": "HSJG",
+            "cid": "Wand_Diamond",
+            "durability": 5,
+            "effects": [
+              {
+                "isUpgraded": false,
+                "value": 2
+              },
+              {
+                "isUpgraded": false,
+                "value": 3
+              },
+              {
+                "isUpgraded": false,
+                "value": 4
+              },
+              {
+                "isUpgraded": false,
+                "value": 5
+              },
+              {
+                "isUpgraded": false,
+                "value": 2
+              },
+              {
+                "isUpgraded": false,
+                "value": 5
+              },
+              {
+                "isUpgraded": false,
+                "value": 6
+              },
+              {
+                "isUpgraded": false,
+                "value": 4
+              },
+              {
+                "isUpgraded": false,
+                "value": 4
+              }
+            ]
+          },
+          "broken": "NOT_BROKEN",
+          "stashedEffect": null,
+          "cost": 2
+        },
+        {
+          "card": {
+            "t": "weapon",
+            "name": "ZFHF",
+            "cid": "Wand_Dragon",
+            "durability": 1,
+            "effects": [
+              {
+                "isUpgraded": false,
+                "value": 3
+              },
+              {
+                "isUpgraded": false,
+                "value": 2
+              },
+              {
+                "isUpgraded": false,
+                "value": 1,
+                "durability": 2
+              },
+              {
+                "isUpgraded": false,
+                "value": 1,
+                "durability": 3
+              },
+              {
+                "isUpgraded": false,
+                "value": 2,
+                "durability": 2
+              },
+              {
+                "isUpgraded": false,
+                "value": 1,
+                "durability": 3
+              },
+              {
+                "isUpgraded": false,
+                "value": 3,
+                "durability": 2
+              },
+              {
+                "isUpgraded": false,
+                "value": 2,
+                "durability": 1
+              },
+              {
+                "isUpgraded": false,
+                "value": 1
+              }
+            ]
+          },
+          "broken": "NOT_BROKEN",
+          "stashedEffect": null,
+          "cost": 2
+        },
+        {
+          "card": {
+            "t": "weapon",
+            "name": "RDWP",
+            "cid": "Wand_Octo",
+            "durability": 4,
+            "effects": [
+              {
+                "isUpgraded": false,
+                "value": 4
+              },
+              {
+                "isUpgraded": false,
+                "value": 3
+              },
+              {
+                "isUpgraded": false,
+                "value": 4,
+                "durability": 1
+              },
+              {
+                "isUpgraded": false,
+                "value": 3,
+                "durability": 1
+              },
+              {
+                "isUpgraded": false,
+                "value": 2,
+                "durability": 2
+              },
+              {
+                "isUpgraded": false,
+                "value": 2,
+                "durability": 2
+              },
+              {
+                "isUpgraded": false,
+                "value": 3,
+                "durability": 1
+              },
+              {
+                "isUpgraded": false,
+                "value": 5,
+                "durability": 1
+              },
+              {
+                "isUpgraded": false,
+                "value": 3
+              }
+            ]
+          },
+          "broken": "NOT_BROKEN",
+          "stashedEffect": null,
+          "cost": 2
+        },
+        {
+          "card": {
+            "t": "weapon",
+            "name": "FDVZ",
+            "cid": "Sword_Nimble",
+            "durability": 2,
+            "effects": [
+              {
+                "isUpgraded": false,
+                "value": 1
+              },
+              {
+                "isUpgraded": false,
+                "value": 1
+              },
+              {
+                "isUpgraded": false,
+                "value": 2,
+                "durability": 2
+              },
+              {
+                "isUpgraded": false,
+                "value": 3,
+                "durability": 1
+              },
+              {
+                "isUpgraded": false,
+                "value": 3
+              },
+              {
+                "isUpgraded": false,
+                "value": 4,
+                "durability": 1
+              },
+              {
+                "isUpgraded": false,
+                "value": 2,
+                "durability": 1
+              },
+              {
+                "isUpgraded": false,
+                "value": 3,
+                "durability": 2
+              },
+              {
+                "isUpgraded": false,
+                "value": 3
+              }
+            ]
+          },
+          "broken": "NOT_BROKEN",
+          "stashedEffect": null,
+          "cost": 1
+        },
+        {
+          "card": {
+            "t": "weapon",
+            "name": "CVGY",
+            "cid": "Axe_DeepwoodClub",
+            "durability": 2,
+            "effects": [
+              {
+                "isUpgraded": false,
+                "value": 2
+              },
+              {
+                "isUpgraded": false,
+                "value": 2
+              },
+              {
+                "isUpgraded": false,
+                "value": 3
+              },
+              {
+                "isUpgraded": false,
+                "value": 4
+              },
+              {
+                "isUpgraded": false,
+                "value": 2
+              },
+              {
+                "isUpgraded": false,
+                "value": 1
+              },
+              {
+                "isUpgraded": false,
+                "value": 3
+              },
+              {
+                "isUpgraded": false,
+                "value": 1
+              },
+              {
+                "isUpgraded": false,
+                "value": 4
+              }
+            ]
+          },
+          "broken": "NOT_BROKEN",
+          "stashedEffect": null,
+          "cost": 1
+        }
+      ]
     },
     {
       "hp": 20,
       "max_hp": 20,
       "energy": 3,
       "actions": 4,
-      firstRollWeaponIndex: null,
-      firstRollEffect: null,
-      "hero":
-      {
+      "firstRollWeaponIndex": null,
+      "firstRollEffect": null,
+      "hero": {
         "t": "hero",
         "name": "Drsnovál",
         "cid": "Brocco",
@@ -84,25 +378,341 @@ let curGameState: replayState = {
         "primaryHealth": 20,
         "secondaryHealth": 0,
         "energy": [
-          { "value": 3, "isUpgraded": false },
-          { "value": 4, "isUpgraded": false },
-          { "value": 3, "isUpgraded": false },
-          { "value": 2, "isUpgraded": false }
+          {
+            "value": 3,
+            "isUpgraded": false
+          },
+          {
+            "value": 4,
+            "isUpgraded": false
+          },
+          {
+            "value": 3,
+            "isUpgraded": false
+          },
+          {
+            "value": 2,
+            "isUpgraded": false
+          }
         ],
         "bonuses": [
-          { "value": 1, "isUpgraded": false, isUsed: false },
-          { "value": 1, "isUpgraded": false, isUsed: false },
-          { "value": 2, "isUpgraded": false, isUsed: false },
-          { "value": 5, "isUpgraded": false, isUsed: false },
-          { "value": 3, "isUpgraded": false, isUsed: false },
+          {
+            "value": 1,
+            "isUpgraded": false,
+            "isUsed": false
+          },
+          {
+            "value": 1,
+            "isUpgraded": false,
+            "isUsed": false
+          },
+          {
+            "value": 2,
+            "isUpgraded": false,
+            "isUsed": false
+          },
+          {
+            "value": 5,
+            "isUpgraded": false,
+            "isUsed": false
+          },
+          {
+            "value": 3,
+            "isUpgraded": false,
+            "isUsed": false
+          },
           null,
-          { "value": 4, "isUpgraded": false, isUsed: false },
+          {
+            "value": 4,
+            "isUpgraded": false,
+            "isUsed": false
+          },
           null
         ]
       },
       "selectedWeaponIndex": 0,
-      "weapons": [{ "card": { "t": "weapon", "name": "LVXB", "cid": "Bow_ElderDragon", "durability": 4, "effects": [{ "isUpgraded": false, "value": 3 }, { "isUpgraded": false, "value": 3 }, { "isUpgraded": false, "value": 3, "durability": 1 }, { "isUpgraded": false, "value": 3, "durability": 1 }, { "isUpgraded": false, "value": 3, "durability": 1 }, { "isUpgraded": false, "value": 2, "durability": 2 }, { "isUpgraded": false, "value": 2, "durability": 1 }, { "isUpgraded": false, "value": 3, "durability": 2 }, { "isUpgraded": false, "value": 1 }] }, "broken": "NOT_BROKEN", "stashedEffect": null, "cost": 1 }, { "card": { "t": "weapon", "name": "LDNR", "cid": "Wand_Fire", "durability": 2, "effects": [{ "isUpgraded": false, "value": 2 }, { "isUpgraded": false, "value": 3 }, { "isUpgraded": false, "value": 2, "durability": 1 }, { "isUpgraded": false, "value": 4, "durability": 3 }, { "isUpgraded": false, "value": 2 }, { "isUpgraded": false, "value": 3 }, { "isUpgraded": false, "value": 3 }, { "isUpgraded": false, "value": 2, "durability": 2 }, { "isUpgraded": false, "value": 2 }] }, "broken": "NOT_BROKEN", "stashedEffect": null, "cost": 1 }, { "card": { "t": "weapon", "name": "SWFW", "cid": "Bow_Long", "durability": 3, "effects": [{ "isUpgraded": false, "value": 2 }, { "isUpgraded": false, "value": 2 }, { "isUpgraded": false, "value": 2, "durability": 1 }, { "isUpgraded": false, "value": 2, "durability": 1 }, { "isUpgraded": false, "value": 1, "durability": 2 }, { "isUpgraded": false, "value": 2, "durability": 2 }, { "isUpgraded": false, "value": 2, "durability": 2 }, { "isUpgraded": false, "value": 2, "durability": 2 }, { "isUpgraded": false, "value": 1 }] }, "broken": "NOT_BROKEN", "stashedEffect": null, "cost": 1 }, { "card": { "t": "weapon", "name": "KRZN", "cid": "Wand_Pyro", "durability": 3, "effects": [{ "isUpgraded": false, "value": 3 }, { "isUpgraded": false, "value": 1 }, { "isUpgraded": false, "value": 4, "durability": 1 }, { "isUpgraded": false, "value": 5, "durability": 2 }, { "isUpgraded": false, "value": 3, "durability": 4 }, { "isUpgraded": false, "value": 3, "durability": 4 }, { "isUpgraded": false, "value": 3, "durability": 1 }, { "isUpgraded": false, "value": 4, "durability": 1 }, { "isUpgraded": false, "value": 4 }] }, "broken": "NOT_BROKEN", "stashedEffect": null, "cost": 2 }, { "card": { "t": "weapon", "name": "CNDQ", "cid": "Wand_Octo", "durability": 4, "effects": [{ "isUpgraded": false, "value": 4 }, { "isUpgraded": false, "value": 3 }, { "isUpgraded": false, "value": 4, "durability": 2 }, { "isUpgraded": false, "value": 3, "durability": 2 }, { "isUpgraded": false, "value": 3, "durability": 2 }, { "isUpgraded": false, "value": 3, "durability": 2 }, { "isUpgraded": false, "value": 2, "durability": 1 }, { "isUpgraded": false, "value": 5, "durability": 1 }, { "isUpgraded": false, "value": 2 }] }, "broken": "NOT_BROKEN", "stashedEffect": null, "cost": 2 }]
-    }], "playerTurn": 0, "rolledEffect": null, "message": null, "targetPlayerIndex": null, "targetCardIndex": null, "round": 0
+      "weapons": [
+        {
+          "card": {
+            "t": "weapon",
+            "name": "LVXB",
+            "cid": "Bow_ElderDragon",
+            "durability": 4,
+            "effects": [
+              {
+                "isUpgraded": false,
+                "value": 3
+              },
+              {
+                "isUpgraded": false,
+                "value": 3
+              },
+              {
+                "isUpgraded": false,
+                "value": 3,
+                "durability": 1
+              },
+              {
+                "isUpgraded": false,
+                "value": 3,
+                "durability": 1
+              },
+              {
+                "isUpgraded": false,
+                "value": 3,
+                "durability": 1
+              },
+              {
+                "isUpgraded": false,
+                "value": 2,
+                "durability": 2
+              },
+              {
+                "isUpgraded": false,
+                "value": 2,
+                "durability": 1
+              },
+              {
+                "isUpgraded": false,
+                "value": 3,
+                "durability": 2
+              },
+              {
+                "isUpgraded": false,
+                "value": 1
+              }
+            ]
+          },
+          "broken": "NOT_BROKEN",
+          "stashedEffect": null,
+          "cost": 1
+        },
+        {
+          "card": {
+            "t": "weapon",
+            "name": "LDNR",
+            "cid": "Wand_Fire",
+            "durability": 2,
+            "effects": [
+              {
+                "isUpgraded": false,
+                "value": 2
+              },
+              {
+                "isUpgraded": false,
+                "value": 3
+              },
+              {
+                "isUpgraded": false,
+                "value": 2,
+                "durability": 1
+              },
+              {
+                "isUpgraded": false,
+                "value": 4,
+                "durability": 3
+              },
+              {
+                "isUpgraded": false,
+                "value": 2
+              },
+              {
+                "isUpgraded": false,
+                "value": 3
+              },
+              {
+                "isUpgraded": false,
+                "value": 3
+              },
+              {
+                "isUpgraded": false,
+                "value": 2,
+                "durability": 2
+              },
+              {
+                "isUpgraded": false,
+                "value": 2
+              }
+            ]
+          },
+          "broken": "NOT_BROKEN",
+          "stashedEffect": null,
+          "cost": 1
+        },
+        {
+          "card": {
+            "t": "weapon",
+            "name": "SWFW",
+            "cid": "Bow_Long",
+            "durability": 3,
+            "effects": [
+              {
+                "isUpgraded": false,
+                "value": 2
+              },
+              {
+                "isUpgraded": false,
+                "value": 2
+              },
+              {
+                "isUpgraded": false,
+                "value": 2,
+                "durability": 1
+              },
+              {
+                "isUpgraded": false,
+                "value": 2,
+                "durability": 1
+              },
+              {
+                "isUpgraded": false,
+                "value": 1,
+                "durability": 2
+              },
+              {
+                "isUpgraded": false,
+                "value": 2,
+                "durability": 2
+              },
+              {
+                "isUpgraded": false,
+                "value": 2,
+                "durability": 2
+              },
+              {
+                "isUpgraded": false,
+                "value": 2,
+                "durability": 2
+              },
+              {
+                "isUpgraded": false,
+                "value": 1
+              }
+            ]
+          },
+          "broken": "NOT_BROKEN",
+          "stashedEffect": null,
+          "cost": 1
+        },
+        {
+          "card": {
+            "t": "weapon",
+            "name": "KRZN",
+            "cid": "Wand_Pyro",
+            "durability": 3,
+            "effects": [
+              {
+                "isUpgraded": false,
+                "value": 3
+              },
+              {
+                "isUpgraded": false,
+                "value": 1
+              },
+              {
+                "isUpgraded": false,
+                "value": 4,
+                "durability": 1
+              },
+              {
+                "isUpgraded": false,
+                "value": 5,
+                "durability": 2
+              },
+              {
+                "isUpgraded": false,
+                "value": 3,
+                "durability": 4
+              },
+              {
+                "isUpgraded": false,
+                "value": 3,
+                "durability": 4
+              },
+              {
+                "isUpgraded": false,
+                "value": 3,
+                "durability": 1
+              },
+              {
+                "isUpgraded": false,
+                "value": 4,
+                "durability": 1
+              },
+              {
+                "isUpgraded": false,
+                "value": 4
+              }
+            ]
+          },
+          "broken": "NOT_BROKEN",
+          "stashedEffect": null,
+          "cost": 2
+        },
+        {
+          "card": {
+            "t": "weapon",
+            "name": "CNDQ",
+            "cid": "Wand_Octo",
+            "durability": 4,
+            "effects": [
+              {
+                "isUpgraded": false,
+                "value": 4
+              },
+              {
+                "isUpgraded": false,
+                "value": 3
+              },
+              {
+                "isUpgraded": false,
+                "value": 4,
+                "durability": 2
+              },
+              {
+                "isUpgraded": false,
+                "value": 3,
+                "durability": 2
+              },
+              {
+                "isUpgraded": false,
+                "value": 3,
+                "durability": 2
+              },
+              {
+                "isUpgraded": false,
+                "value": 3,
+                "durability": 2
+              },
+              {
+                "isUpgraded": false,
+                "value": 2,
+                "durability": 1
+              },
+              {
+                "isUpgraded": false,
+                "value": 5,
+                "durability": 1
+              },
+              {
+                "isUpgraded": false,
+                "value": 2
+              }
+            ]
+          },
+          "broken": "NOT_BROKEN",
+          "stashedEffect": null,
+          "cost": 2
+        }
+      ]
+    }
+  ],
+  "playerTurn": 0,
+  "rolledEffect": null,
+  "message": null,
+  "targetPlayerIndex": null,
+  "targetCardIndex": null,
+  "round": 0
 };
 
 function endPhaseStep() {
@@ -180,6 +790,7 @@ function endTurn() {
   curGameState.playerTurn = invertPlayerIndex(curGameState.playerTurn);
   curGameState.players[curGameState.playerTurn].actions = 4;
   curGameState.status = "MAIN";
+  curGameState.endIndex = null;
 
   curGameState.players[curGameState.playerTurn].weapons.forEach((weapon) => {
     if (weapon.broken === "FIXING") {
@@ -236,6 +847,82 @@ function removeCombos(playerIndex: number) {
       }
     }
   });
+}
+
+function canBlockFire() {
+
+  let hasShields = false;
+
+
+  for (const weapon of curGameState.players[invertPlayerIndex(curGameState.playerTurn)].weapons) {
+    if (weapon.stashedEffect !== null) {
+      console.log(weapon.stashedEffect.type);
+      if (weapon.stashedEffect.type === "DEFENSE") {
+        hasShields = true;
+      }
+    }
+  };
+
+  if (hasShields === false) {
+    fireAttack();
+  }
+}
+
+function fireAttack() {
+  if (curGameState.targetCardIndex === null || curGameState.targetPlayerIndex === null) {
+    console.log("No target");
+    return;
+  }
+
+  if (!curGameState.rolledEffect) {
+    console.log("No effect rolled");
+    return;
+  }
+
+  const stopRound = curGameState.rolledEffect.color !== "GREEN";
+
+
+  if (curGameState.status !== "BLOCK") {
+    console.log("Not in block phase");
+    return;
+  }
+
+  if (curGameState.endIndex === null) {
+    curGameState.status = "MAIN";
+  } else {
+    curGameState.status = "END";
+  }
+
+  let value = curGameState.rolledEffect.value;
+
+  if (curGameState.targetCardIndex === 0) {
+    curGameState.players[curGameState.targetPlayerIndex].hp -= value;
+  } else {
+
+    const targetWeapon = curGameState.players[curGameState.targetPlayerIndex].weapons[curGameState.targetCardIndex - 1];
+
+    if (!targetWeapon.stashedEffect?.durability) {
+
+      if (value >= targetWeapon.card.durability) {
+        targetWeapon.broken = "BROKEN";
+      }
+    } else {
+      if (value >= targetWeapon.stashedEffect.durability) {
+        targetWeapon.stashedEffect = null;
+      }
+    }
+
+  }
+
+  curGameState.rolledEffect = null;
+  curGameState.targetCardIndex = null;
+  curGameState.targetPlayerIndex = null;
+
+  if (stopRound) {
+    endPhase();
+  }
+
+  console.log("Fire attack end");
 
 }
 
@@ -372,7 +1059,7 @@ app.prepare().then(() => {
         }*/
 
         if (bonuses[data.bonusIndex - 1] === null) {
-          console.log(bonuses, data.bonusIndex);
+          //console.log(bonuses, data.bonusIndex);
           console.log("Invalid bonus index");
           return;
         }
@@ -391,7 +1078,7 @@ app.prepare().then(() => {
         curGameState.rolledEffect.value += heroBonus.value;
         //heroBonus.isUsed = true;
 
-        
+
         const curBonus = curGameState.players[curGameState.playerTurn].hero.bonuses[(curGameState.round % 4) * 2 + data.bonusIndex - 1];
 
         if (curBonus === null) {
@@ -400,7 +1087,7 @@ app.prepare().then(() => {
         }
 
         curBonus.isUsed = true;
-        
+
       }
 
       if (curGameState.status == "END") {
@@ -444,8 +1131,18 @@ app.prepare().then(() => {
         curGameState.players[curGameState.playerTurn].hp += curGameState.rolledEffect.value;
         curGameState.rolledEffect = null;
       } else if (curGameState.rolledEffect.type === "HERO_ATTACK") {
-        enemyPlayer.hp -= curGameState.rolledEffect.value;
-        curGameState.rolledEffect = null;
+        //enemyPlayer.hp -= curGameState.rolledEffect.value;
+        //curGameState.rolledEffect = null;
+
+        curGameState.status = "BLOCK";
+
+        curGameState.targetPlayerIndex = invertPlayerIndex(curGameState.playerTurn);
+        curGameState.targetCardIndex = 0;
+
+        canBlockFire();
+
+        io.emit("setState", curGameState);
+
       } else if (curGameState.rolledEffect.type === "WEAPON_ATTACK") {
 
         if (enemyPlayer.weapons[data.targetWeaponIndex].broken !== "NOT_BROKEN") {
@@ -453,55 +1150,34 @@ app.prepare().then(() => {
           return;
         }
 
-        const targetedWeapon = enemyPlayer.weapons[data.targetWeaponIndex];
+        curGameState.status = "BLOCK";
 
-        if (targetedWeapon.stashedEffect === null) {
-          if (curGameState.rolledEffect.value >= targetedWeapon.card.durability) {
-            targetedWeapon.broken = "BROKEN";
-          }
-        } else {
-          if (targetedWeapon.stashedEffect.durability === null) {
-            console.log("Can't attack weapon with non-durability effect");
-            return;
-          }
-          if (curGameState.rolledEffect.value >= targetedWeapon.stashedEffect.durability) {
-            targetedWeapon.stashedEffect = null;
-          }
-        }
+        curGameState.targetPlayerIndex = invertPlayerIndex(curGameState.playerTurn);
+        curGameState.targetCardIndex = data.targetWeaponIndex + 1;
 
-        curGameState.rolledEffect = null;
+        canBlockFire();
+
+        io.emit("setState", curGameState);
+
       } else if (curGameState.rolledEffect.type === "UNIVERSAL_ATTACK") {
-        if (data.target == "player") {
-          enemyPlayer.hp -= curGameState.rolledEffect.value;
-          curGameState.rolledEffect = null;
-        } else {
+        let targetCardIndex = 0;
+        if (data.target == "weapon") {
           if (enemyPlayer.weapons[data.targetWeaponIndex].broken !== "NOT_BROKEN") {
             console.log("Can't attack broken weapon");
             return;
           }
 
-          const targetedWeapon = enemyPlayer.weapons[data.targetWeaponIndex];
-
-          if (targetedWeapon.stashedEffect === null) {
-            if (curGameState.rolledEffect.value >= targetedWeapon.card.durability) {
-              targetedWeapon.broken = "BROKEN";
-            }
-          } else {
-            if (targetedWeapon.stashedEffect.durability === null) {
-              console.log("Can't attack weapon with non-durability effect");
-              return;
-            }
-            if (curGameState.rolledEffect.value >= targetedWeapon.stashedEffect.durability) {
-              targetedWeapon.stashedEffect = null;
-            }
-          }
-
-          curGameState.rolledEffect = null;
+          targetCardIndex = data.targetWeaponIndex + 1;
         }
-      }
 
-      if (stopRound) {
-        endPhase();
+        curGameState.status = "BLOCK";
+
+        curGameState.targetPlayerIndex = invertPlayerIndex(curGameState.playerTurn);
+        curGameState.targetCardIndex = targetCardIndex;
+
+        canBlockFire();
+
+        io.emit("setState", curGameState);
       }
 
       io.emit("setState", curGameState);
@@ -646,6 +1322,49 @@ app.prepare().then(() => {
       curGameState.players[data.playerIndex].weapons[data.targetWeaponIndex].broken = "FIXING";
 
       io.emit("setState", curGameState);
+    });
+
+    socket.on("block", (data: { playerIndex: number, shieldList: number[] }) => {
+    
+      if (data.playerIndex !== invertPlayerIndex(curGameState.playerTurn)) {
+        console.log("Not your turn");
+        return;
+      }
+
+      if (curGameState.status !== "BLOCK") {
+        console.log("Not in block phase");
+        return;
+      }
+
+      if (curGameState.rolledEffect === null) {
+        console.log("No effect rolled");
+        return;
+      }
+
+      const blockingPlayer = curGameState.players[invertPlayerIndex(curGameState.playerTurn)];
+
+      let blockValue = 0;
+
+      console.log(data.shieldList);
+
+      data.shieldList.forEach((shieldIndex) => {
+        const shield = blockingPlayer.weapons[shieldIndex];
+        if (shield.stashedEffect !== null) {
+          if (shield.stashedEffect.type === "DEFENSE") {
+            blockValue += shield.stashedEffect.value;
+            shield.stashedEffect = null;
+          }
+        }
+      });
+
+      curGameState.rolledEffect.value -= blockValue;
+
+      if (curGameState.rolledEffect.value < 0) {
+        curGameState.rolledEffect.value = 0;
+      }
+
+      fireAttack();
+
     });
 
   });

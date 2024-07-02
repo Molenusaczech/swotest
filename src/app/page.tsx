@@ -25,12 +25,13 @@ export default function Home() {
   const [state, setState] = useState<null | replayState>(null);
   const [playerIndex, setPlayerIndex] = useState<number>(0);
   const [bonusIndex, setBonusIndex] = useState<number>(0);
+  const [shieldsList, setShieldsList] = useState<number[]>([]);
 
   let curBonuses = null;
 
   if (state !== null && state.rolledEffect !== null) {
     curBonuses = getCurrentBonuses(state.players[playerIndex].hero, state?.round, state.rolledEffect.type);
-  
+
     if (curBonuses[bonusIndex + 1] === null && bonusIndex !== 0) {
       setBonusIndex(0);
     }
@@ -179,29 +180,59 @@ export default function Home() {
         </div>}
 
         {
-        state.rolledEffect !== null && 
-        state.playerTurn === playerIndex && 
-        state.rolledEffect.type !== null &&
-        ((state.status === "MAIN" && !hasDurability(effectMap[state.rolledEffect.type])) || (state.status === "END" && hasDurability(effectMap[state.rolledEffect.type]))) &&
-        <div>
+          state.rolledEffect !== null &&
+          state.playerTurn === playerIndex &&
+          state.rolledEffect.type !== null &&
+          ((state.status === "MAIN" && !hasDurability(effectMap[state.rolledEffect.type])) || (state.status === "END" && hasDurability(effectMap[state.rolledEffect.type]))) &&
           <div>
-            <Button variant={0 === bonusIndex ? "contained" : "outlined"}
-              onClick={() => { setBonusIndex(0); }}
+            <div>
+              <Button variant={0 === bonusIndex ? "contained" : "outlined"}
+                onClick={() => { setBonusIndex(0); }}
 
-            >
-              Bez bonusu
-            </Button>
-          </div>            {getCurrentBonuses(state.players[state.playerTurn].hero, state.round, state.rolledEffect?.type).map((bonus, i) => (
-            <div key={i + 1}>
-              {bonus !== null && <Button variant={(i + 1) === bonusIndex ? "contained" : "outlined"}
-                onClick={() => { setBonusIndex(i + 1); }}
               >
-                {bonus.type}: {bonus.value}
-              </Button>}
-            </div>
-          ))
+                Bez bonusu
+              </Button>
+            </div>            {getCurrentBonuses(state.players[state.playerTurn].hero, state.round, state.rolledEffect?.type).map((bonus, i) => (
+              <div key={i + 1}>
+                {bonus !== null && <Button variant={(i + 1) === bonusIndex ? "contained" : "outlined"}
+                  onClick={() => { setBonusIndex(i + 1); }}
+                >
+                  {bonus.type}: {bonus.value}
+                </Button>}
+              </div>
+            ))
 
-          }
+            }
+          </div>}
+
+        {state.status === "BLOCK" && state.playerTurn === invertPlayerIndex(playerIndex) && <div>
+
+          {JSON.stringify(shieldsList)}
+          <div>
+
+            {[0, 1, 2, 3, 4].map((i) => {
+              return (
+                <Button
+                  key={i}
+                  onClick={() => {
+                    if (shieldsList.includes(i)) {
+                      setShieldsList(shieldsList.filter((j) => j !== i));
+                    } else {
+                      setShieldsList([...shieldsList, i]);
+                    }
+                  }}
+                >{shieldsList.includes(i) ? "Odvybrat štít" : "Vybrat štít"} {i}</Button>
+              )
+            })}
+
+          </div>
+
+          <Button
+            onClick={() => {
+              socket.emit("block", { playerIndex, shieldsList });
+            }}
+          >{shieldsList.length === 0 ? "Nepoužít štíty" : "Použít vybrané štíty"}</Button>
+
         </div>}
 
         <div>

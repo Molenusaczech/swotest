@@ -1,9 +1,8 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+This a SWO clone. It can be used to simulate SWO games and tweak the rules and gameState easily.
 
 ## Getting Started
 
-First, run the development server:
-
+If you just want to run the frontend, run the following commands:
 ```bash
 npm run dev
 # or
@@ -12,6 +11,24 @@ yarn dev
 pnpm dev
 # or
 bun dev
+```
+
+If you want to run the whole app including the websocket server, run the following commands:
+```bash
+
+npm run mole
+
+# or
+
+yarn mole
+
+# or
+
+pnpm mole
+
+# or
+
+bun mole
 ```
 
 ## Docs

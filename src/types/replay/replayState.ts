@@ -41,7 +41,7 @@ type replayState = {
     targetCardIndex: number | null,
     round: number,
     startingPlayer: number,
-    status: "START" | "MAIN" | "END",
+    status: "START" | "MAIN" | "END" | "BLOCK",
     endIndex: number | null,
     chooseStartPlayer: number | null,
 }
