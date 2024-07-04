@@ -879,7 +879,7 @@ function fireAttack() {
     return;
   }
 
-  const stopRound = curGameState.rolledEffect.color !== "GREEN";
+  const stopRound = curGameState.rolledEffect.color === "RED" || curGameState.rolledEffect.color === "ORANGE";
 
 
   if (curGameState.status !== "BLOCK") {
@@ -1324,7 +1324,7 @@ app.prepare().then(() => {
       io.emit("setState", curGameState);
     });
 
-    socket.on("block", (data: { playerIndex: number, shieldList: number[] }) => {
+    socket.on("block", (data: { playerIndex: number, shieldsList: number[] }) => {
     
       if (data.playerIndex !== invertPlayerIndex(curGameState.playerTurn)) {
         console.log("Not your turn");
@@ -1345,9 +1345,9 @@ app.prepare().then(() => {
 
       let blockValue = 0;
 
-      console.log(data.shieldList);
+      console.log(data.shieldsList);
 
-      data.shieldList.forEach((shieldIndex) => {
+      data.shieldsList.forEach((shieldIndex) => {
         const shield = blockingPlayer.weapons[shieldIndex];
         if (shield.stashedEffect !== null) {
           if (shield.stashedEffect.type === "DEFENSE") {
@@ -1364,6 +1364,8 @@ app.prepare().then(() => {
       }
 
       fireAttack();
+
+      io.emit("setState", curGameState);
 
     });
 
